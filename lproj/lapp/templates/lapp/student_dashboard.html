@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f9; margin: 0; padding: 0;">
+    <div style="background: #2c3e50; color: #fff; padding: 10px 20px; text-align: right;">
+        <h1 style="text-align: left; margin: 0; color: #fff;"> Welcome, {{ student_name }}</h1>
+        <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" style="background: #e74c3c; color: #fff; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px;">
+                Logout
+            </button>
+        </form>
+    </div>
+
+    <div style="padding: 20px; max-width: 1100px; margin: 20px auto; background: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <h2>Course: {{ course }}</h2>
+
+        <h3 style="margin-top: 30px;">Videos</h3>
+        <ul style="list-style: none; padding: 0;">
+            {% for video in videos %}
+                <li style="margin-bottom: 15px;">
+                    {{ video.title }} - 
+                    <a href="{{ video.video }}" target="_blank" style="background: #3498db; color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-size: 14px;">
+                        Watch Video
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+        <hr>
+
+        <h2>Your Assignments</h2>
+        {% if assignments %}
+            <ul style="list-style: none; padding: 0;">
+                {% for data in assignments %}
+                    <li style="margin-bottom: 20px;">
+                        <strong>{{ data.assignment.title }}</strong><br>
+                        Due Date: {{ data.assignment.due_date }}<br> <br>
+                        {% if data.submission %}
+                            Your Submission: 
+                            <a href="{{ data.submission.link }}" target="_blank" style="background: #2ecc71; color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-size: 14px;">
+                                View Submission
+                            </a>
+                        {% elif data.assignment.id %}
+                            <a href="{% url 'submit_assignment' data.assignment.id %}" style="background: #3498db; color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-size: 14px;">
+                                Submit Now
+                            </a>
+                        {% else %}
+                            <span style="color: red;">Invalid Assignment</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No assignments posted yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
